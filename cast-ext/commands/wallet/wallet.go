@@ -9,6 +9,7 @@ func Command() *cli.Command {
 		Subcommands: []*cli.Command{
 			NewNew().Command(),
 			NewSign().Command(),
+			NewSignType().Command(),
 		},
 	}
 }

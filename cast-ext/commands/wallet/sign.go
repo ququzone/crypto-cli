@@ -1,7 +1,6 @@
 package wallet
 
 import (
-	"encoding/hex"
 	"errors"
 	"fmt"
 	"math/big"
@@ -38,8 +37,7 @@ func (s *Sign) Command() *cli.Command {
 			},
 		},
 		Action: func(ctx *cli.Context) error {
-			hashStr := ctx.Args().Get(0)
-			hash, err := hex.DecodeString(hashStr[2:])
+			hash, err := hexutil.Decode(ctx.Args().First())
 			if err != nil {
 				return errors.New("decode hash error")
 			}
