@@ -1,31 +1,38 @@
-package main
+package wallet
 
 import (
 	"encoding/hex"
 	"errors"
 	"fmt"
-	"log"
 	"math/big"
 	"os"
 	"strings"
 
+	"github.com/ethereum/go-ethereum/common/hexutil"
 	"github.com/ethereum/go-ethereum/crypto"
 	"github.com/urfave/cli/v2"
 )
 
-func main() {
-	var raw bool
+type Sign struct {
+	raw bool
+}
 
-	app := &cli.App{
-		Name:  "sign",
-		Usage: "sign message",
+func NewSign() *Sign {
+	return &Sign{}
+}
+
+func (s *Sign) Command() *cli.Command {
+	return &cli.Command{
+		Name:    "sign",
+		Aliases: []string{"s"},
+		Usage:   "cast wallet sign [OPTIONS] <MESSAGE>",
 		Flags: []cli.Flag{
 			&cli.BoolFlag{
 				Name:    "raw",
 				Aliases: []string{"r"},
-				Usage:   "sign with raw",
+				Usage:   "sign with raw message",
 				Action: func(ctx *cli.Context, b bool) error {
-					raw = b
+					s.raw = b
 					return nil
 				},
 			},
@@ -37,6 +44,9 @@ func main() {
 				return errors.New("decode hash error")
 			}
 			keyStr := os.Getenv("PRIVATE_KEY")
+			if keyStr == "" {
+				return errors.New("need PRIVATE_KEY")
+			}
 			if strings.EqualFold("0x", keyStr[:2]) {
 				keyStr = keyStr[2:]
 			}
@@ -45,24 +55,20 @@ func main() {
 				fmt.Print(err)
 				return errors.New("load private key error")
 			}
-			if raw {
+			if s.raw {
 				sig, err := crypto.Sign(hash, key)
 				if err != nil {
 					return errors.New("sign message error")
 				}
 				v := new(big.Int).SetBytes([]byte{sig[64] + 27})
 				fmt.Printf(
-					"Signature:\n\tr: 0x%s,\n \ts: 0x%s,\n \tv: %d\n",
-					hex.EncodeToString(sig[:32]),
-					hex.EncodeToString(sig[32:64]),
+					"Successfully sign message.\nr: %s\ns: %s\nv: %d\n",
+					hexutil.Encode(sig[:32]),
+					hexutil.Encode(sig[32:64]),
 					v.Uint64(),
 				)
 			}
 			return nil
 		},
-	}
-
-	if err := app.Run(os.Args); err != nil {
-		log.Fatal(err)
 	}
 }
