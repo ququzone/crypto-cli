@@ -10,6 +10,7 @@ func Command() *cli.Command {
 			NewNew().Command(),
 			NewSign().Command(),
 			NewSignType().Command(),
+			NewDetail().Command(),
 		},
 	}
 }

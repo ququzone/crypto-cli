@@ -2,13 +2,13 @@ package wallet
 
 import (
 	"crypto/ecdsa"
+	"encoding/hex"
 	"errors"
 	"fmt"
 	"os"
 	"syscall"
 
 	"github.com/ethereum/go-ethereum/accounts/keystore"
-	"github.com/ethereum/go-ethereum/common/hexutil"
 	"github.com/ethereum/go-ethereum/crypto"
 	"github.com/google/uuid"
 	"github.com/urfave/cli/v2"
@@ -67,8 +67,8 @@ func (n *New) Command() *cli.Command {
 				fmt.Printf(
 					"Successfully created new keypair.:\nAddress: %s\nPrivate Key: %s\nPublic Key: %s\n",
 					address.Hex(),
-					hexutil.Encode(privateKeyBytes)[2:],
-					hexutil.Encode(publicKeyBytes)[2:],
+					hex.EncodeToString(privateKeyBytes),
+					hex.EncodeToString(publicKeyBytes),
 				)
 			} else {
 				key := &keystore.Key{
@@ -81,6 +81,7 @@ func (n *New) Command() *cli.Command {
 				if err != nil {
 					return errors.New("encrypt keystore error")
 				}
+				// TODO this may be conflic by address
 				file, err := os.Create(path + address.Hex())
 				if err != nil {
 					return errors.New("open keystore file error")
@@ -91,7 +92,7 @@ func (n *New) Command() *cli.Command {
 				fmt.Printf(
 					"Successfully created new keypair.:\nAddress: %s\nPublic Key: %s\nPath: %s\n",
 					address.Hex(),
-					hexutil.Encode(publicKeyBytes)[2:],
+					hex.EncodeToString(publicKeyBytes),
 					path+address.Hex(),
 				)
 			}
