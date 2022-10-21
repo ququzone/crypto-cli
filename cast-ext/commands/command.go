@@ -1,7 +1,7 @@
 package commands
 
 import (
-	"github.com/ququzone/crypto-cli/cast-ext/commands/wallet"
+	"github.com/ququzone/cast-ext/commands/wallet"
 	"github.com/urfave/cli/v2"
 )
 

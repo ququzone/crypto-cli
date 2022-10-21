@@ -1,4 +1,4 @@
-module github.com/ququzone/crypto-cli
+module github.com/ququzone/cast-ext
 
 go 1.19
 

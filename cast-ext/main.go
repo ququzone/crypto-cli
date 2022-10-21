@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/ququzone/crypto-cli/cast-ext/commands"
+	"github.com/ququzone/cast-ext/commands"
 	"github.com/urfave/cli/v2"
 )
 
